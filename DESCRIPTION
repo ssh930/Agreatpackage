@@ -6,7 +6,6 @@ Author: Sihan Shen
 Maintainer: Sihan Shen <454314870@qq.com>
 Description: 
     This package return crucial data for analyzing portfolios such as alpha, beta , sharpe. It is intented for people who just want to take a glance at certain portfolios without too much work manually. 
-    
 License: MIT
 Encoding: UTF-8
 LazyData: true
