@@ -11,6 +11,9 @@
 #'@examples
 #'ann_ret(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11')
 
+library(tidyquant)
+library(ggplot2)
+
 ann_ret <- function(tickers , wts , from , to){
   price_data <- tq_get(tickers , from = from , to = to , get = 'stock.prices')
 

@@ -15,6 +15,7 @@
 #'@examples
 #'alp_bet(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11' , 'SPX' , 0.09)
 
+library(tidyquant)
 
 alp_bet <- function(ticker , wts , from , to , bench , free){
   price_data <- tq_get(tickers , from = from , to = to , get = 'stock.prices')
