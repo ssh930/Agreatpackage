@@ -1,0 +1,18 @@
+Package: Agreatpackage
+Type: Package
+Title: A Package to analyze portfolio
+Version: 0.1.0
+Author: Sihan Shen
+Maintainer: Sihan Shen <454314870@qq.com>
+Description: 
+    This package return crucial data for analyzing portfolios such as alpha, beta , sharpe. It is intented for people who just want to take a glance at certain portfolios without too much work manually. 
+    
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    tidyquant,
+    ggplot2
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
