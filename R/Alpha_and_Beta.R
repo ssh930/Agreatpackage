@@ -18,7 +18,7 @@
 library(tidyquant)
 
 alp_bet <- function(ticker , wts , from , to , bench , free){
-  price_data <- tq_get(tickers , from = from , to = to , get = 'stock.prices')
+  price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
 
   ret_data <- price_data %>%
     group_by(symbol) %>%
