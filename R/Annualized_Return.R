@@ -10,36 +10,42 @@
 #'
 #'@examples
 #'ann_ret(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11')
-
-library(tidyquant)
-library(ggplot2)
-
+#'@importFrom tidyquant tq_get
+#'@importFrom tidyquant tq_transmute
+#'@importFrom tidyquant tq_portfolio
+#'@importFrom dplyr tibble
+#'@importFrom dplyr left_join
+#'@importFrom dplyr mutate
+#'@importFrom dplyr group_by
+#'@importFrom magrittr "%>%"
+#'@importFrom stats lm
+#'@export
 ann_ret <- function(tickers , wts , from , to){
-  price_data <- tq_get(tickers , from = from , to = to , get = 'stock.prices')
+  price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
 
   ret_data <- price_data %>%
     group_by(symbol) %>%
-    tq_transmute(select = adjusted,
+    tidyquant::tq_transmute(select = adjusted,
                  mutate_fun = periodReturn,
                  period = "daily",
                  col_rename = "ret")
 
-  wts_tbl <- tibble(symbol = tickers,
+  wts_tbl <- dplyr::tibble(symbol = tickers,
                     wts = wts)
-  ret_data <- left_join(ret_data,wts_tbl, by = 'symbol')
+  ret_data <- dplyr::left_join(ret_data,wts_tbl, by = 'symbol')
 
   ret_data <- ret_data %>%
-    mutate(wt_return = wts * ret)
+    dplyr::mutate(wt_return = wts * ret)
 
   port_ret <- ret_data %>%
-    tq_portfolio(assets_col = symbol,
+    tidyquant::tq_portfolio(assets_col = symbol,
                  returns_col = ret,
                  weights = wts,
                  col_rename = 'port_ret',
                  geometric = FALSE)
 
   average_annual_port_ret <- port_ret %>%
-    tq_performance(Ra = port_ret,
+    tidyquant::tq_performance(Ra = port_ret,
                    performance_fun = Return.annualized)
 
   cat("The average annual portfolio returns is ", round((average_annual_port_ret[[1]] * 100),2),"%", sep = "")

@@ -13,43 +13,51 @@
 #'@param free This should be a double. It is the risk-free interest rate.
 #'
 #'@examples
-#'alp_bet(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11' , 'SPX' , 0.09)
-
-library(tidyquant)
-
-alp_bet <- function(ticker , wts , from , to , bench , free){
+#'alp_bet(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11' , 'SPY' , 0.09)
+#'@importFrom tidyquant tq_get
+#'@importFrom tidyquant tq_transmute
+#'@importFrom tidyquant tq_portfolio
+#'@importFrom dplyr tibble
+#'@importFrom dplyr left_join
+#'@importFrom dplyr mutate
+#'@importFrom dplyr group_by
+#'@importFrom magrittr "%>%"
+#'@importFrom stats lm
+#'@export
+alp_bet <- function(tickers , wts , from , to , bench , free){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
 
   ret_data <- price_data %>%
-    group_by(symbol) %>%
-    tq_transmute(select = adjusted,
+    dplyr::group_by(symbol) %>%
+    tidyquant::tq_transmute(select = adjusted,
                  mutate_fun = periodReturn,
                  period = "daily",
                  col_rename = "ret")
 
-  wts_tbl <- tibble(symbol = tickers,
+  wts_tbl <- dplyr::tibble(symbol = tickers,
                     wts = wts)
-  ret_data <- left_join(ret_data,wts_tbl, by = 'symbol')
+
+  ret_data <- dplyr::left_join(ret_data,wts_tbl, by = 'symbol')
 
   ret_data <- ret_data %>%
-    mutate(wt_return = wts * ret)
+    dplyr::mutate(wt_return = wts * ret)
 
   port_ret <- ret_data %>%
-    tq_portfolio(assets_col = symbol,
+    tidyquant::tq_portfolio(assets_col = symbol,
                  returns_col = ret,
                  weights = wts,
                  col_rename = 'port_ret',
                  geometric = FALSE)
 
-  bench_price <- tq_get('SPY', from = from , to = to , get = 'stock.prices')
+  bench_price <- tidyquant::tq_get(bench , from = from , to = to , get = 'stock.prices')
 
   bench_ret <- bench_price %>%
-    tq_transmute(select = adjusted,
+    tidyquant::tq_transmute(select = adjusted,
                  mutate_fun = periodReturn,
                  period = "daily",
                  col_rename = "bench_ret")
 
-  comb_ret <- left_join(port_ret - free/252,
+  comb_ret <- dplyr::left_join(port_ret - free/252,
                         bench_ret - free/252,
                         by = 'date')
 
