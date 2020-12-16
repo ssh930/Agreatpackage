@@ -13,7 +13,12 @@ Imports:
     ggplot2,
     tidyquant,
     dplyr,
-    magrittr
+    magrittr,
+    zoo,
+    xts,
+    quantmod,
+    TTR,
+    PerformanceAnalytics
 RoxygenNote: 7.1.1
 Depends: 
     R (>= 2.10)

@@ -22,7 +22,11 @@
 #'@export
 ann_ret <- function(tickers , wts , from , to){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
-
+  attachNamespace("xts")
+  attachNamespace("quantmod")
+  attachNamespace("TTR")
+  attachNamespace("PerformanceAnalytics")
+  attachNamespace("zoo")
   ret_data <- price_data %>%
     group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,
@@ -33,9 +37,6 @@ ann_ret <- function(tickers , wts , from , to){
   wts_tbl <- dplyr::tibble(symbol = tickers,
                     wts = wts)
   ret_data <- dplyr::left_join(ret_data,wts_tbl, by = 'symbol')
-
-  ret_data <- ret_data %>%
-    dplyr::mutate(wt_return = wts * ret)
 
   port_ret <- ret_data %>%
     tidyquant::tq_portfolio(assets_col = symbol,

@@ -26,7 +26,11 @@
 #'@export
 tre <- function(tickers , wts , from , to , bench , free){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
-
+  attachNamespace("xts")
+  attachNamespace("quantmod")
+  attachNamespace("TTR")
+  attachNamespace("PerformanceAnalytics")
+  attachNamespace("zoo")
   ret_data <- price_data %>%
     dplyr::group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,

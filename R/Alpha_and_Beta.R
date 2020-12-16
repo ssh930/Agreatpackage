@@ -23,10 +23,16 @@
 #'@importFrom dplyr group_by
 #'@importFrom magrittr "%>%"
 #'@importFrom stats lm
+#'@import zoo
 #'@export
 alp_bet <- function(tickers , wts , from , to , bench , free){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
 
+  attachNamespace("xts")
+  attachNamespace("quantmod")
+  attachNamespace("TTR")
+  attachNamespace("PerformanceAnalytics")
+  attachNamespace("zoo")
   ret_data <- price_data %>%
     dplyr::group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,
@@ -38,9 +44,6 @@ alp_bet <- function(tickers , wts , from , to , bench , free){
                     wts = wts)
 
   ret_data <- dplyr::left_join(ret_data,wts_tbl, by = 'symbol')
-
-  ret_data <- ret_data %>%
-    dplyr::mutate(wt_return = wts * ret)
 
   port_ret <- ret_data %>%
     tidyquant::tq_portfolio(assets_col = symbol,
