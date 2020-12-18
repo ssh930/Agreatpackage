@@ -24,14 +24,11 @@
 #'@importFrom ggplot2 labs
 #'@importFrom ggplot2 theme_classic
 #'@importFrom ggplot2 scale_y_continuous
+#'@importFrom quantmod periodReturn
 #'@export
 cum_ret <- function(tickers , wts , from , to) {
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
-  attachNamespace("xts")
-  attachNamespace("quantmod")
-  attachNamespace("TTR")
-  attachNamespace("PerformanceAnalytics")
-  attachNamespace("zoo")
+
   ret_data <- price_data %>%
     group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,

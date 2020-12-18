@@ -21,14 +21,11 @@
 #'@importFrom dplyr group_by
 #'@importFrom magrittr "%>%"
 #'@importFrom stats lm
+#'@importFrom quantmod periodReturn
 #'@export
 sha <- function(tickers , wts , from , to , free){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
-  attachNamespace("xts")
-  attachNamespace("quantmod")
-  attachNamespace("TTR")
-  attachNamespace("PerformanceAnalytics")
-  attachNamespace("zoo")
+
   ret_data <- price_data %>%
     group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,

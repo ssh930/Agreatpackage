@@ -12,8 +12,7 @@
 #'
 #'@param free This should be a double. It is the risk-free interest rate.
 #'
-#'@examples
-#'alp_bet(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11' , 'SPY' , 0.09)
+#'@examples alp_bet(c('JNJ' , 'WFC' , 'KO') , c(0.4 , 0.4 , -0.2) , '2020-11-11' , '2020-12-11' , 'SPY' , 0.09)
 #'@importFrom tidyquant tq_get
 #'@importFrom tidyquant tq_transmute
 #'@importFrom tidyquant tq_portfolio
@@ -24,15 +23,14 @@
 #'@importFrom magrittr "%>%"
 #'@importFrom stats lm
 #'@import zoo
+#'@import xts
+#'@import quantmod
+#'@import TTR
+#'@import PerformanceAnalytics
 #'@export
 alp_bet <- function(tickers , wts , from , to , bench , free){
   price_data <- tidyquant::tq_get(tickers , from = from , to = to , get = 'stock.prices')
 
-  attachNamespace("xts")
-  attachNamespace("quantmod")
-  attachNamespace("TTR")
-  attachNamespace("PerformanceAnalytics")
-  attachNamespace("zoo")
   ret_data <- price_data %>%
     dplyr::group_by(symbol) %>%
     tidyquant::tq_transmute(select = adjusted,
